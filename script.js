@@ -1,6 +1,6 @@
 // Only thing you need to change is wordMaze, allWords, columnLength, font-size, and dimensions!
 var wordMaze = "WAMEDICAMENTATIONAAA" + "EBBBBN7777ABTBBBBIBA" + "ACGASTROENTERITISNMP" + "TDDMDEDDDDIDI777DAIP" + "HAEAERCEEEO7PFFFICLR" + "ECGGGPHGGGNGLGGGSCLO" + "RCONGRATULATIONSAEIP" + "BOPEIERI77LICONIDSER" + "OMITJTAJJJIJIJOJVSQI" + "APSO7ACKKKSTFKIKAIUA" + "RLTELTTLLLALOLTLNBIT" + "DIHLMIEMMNT7LMAMTIVE" + "ISOENORNINININCNALAN" + "NHGCONITOOOOUOIOGILE" + "GMNTPSS777NPMPFPETES" + "QEARQATRRRR777IROYNS" + "SNTIRSISSYSSSSNSUSTS" + "7THC77C77T7777O7S77E" + "7SO7MISCHIEVOUSNESSL" + "7RU77TRIFLUOPERAZINE" + "P7SYTILIBAREVUENAM7C" + "777777777I7777P7777T" + "TTSTRAIGHTFORWARDTTR" + "UUUUUUUUUNUUUUUUUUUO" + "77777ACADEMICIANSHIP" + "V777ACHONDROPLASTICO" + "7FORTHCOMINGNESS777S" + "WWWWACHOOFRONTIEREDI" + "777777777N777777777T" + "XYXHYPOPROTEINEMIAXI" + "ELECTRIFICATIONYEETV" + "ZZINSTRUMENTALISTZZE";
-var allWords = ["PROCRASTINATION", "PERSONIFICATION","CHARACTERISTICS", "CONGRATULATIONS", "ACCOMPLISHMENTS", "MANEUVERABILITY", "NATIONALISATION", "CONFIDENTIALITY", "ACHONDROPLASTIC", "MEDICAMENTATION", "ELECTRIFICATION", "INSTRUMENTALIST", "ATRIPLICIFOLIUM", "STRAIGHTFORWARD", "ACADEMICIANSHIP", "APPROPRIATENESS", "INACCESSIBILITY", "TRIFLUOPERAZINE", "GASTROENTERITIS", "WEATHERBOARDING", "DISADVANTAGEOUS", "FORTHCOMINGNESS", "MAGNETOELECTRIC", "MISCHIEVOUSNESS", "OPISTHOGNATHOUS", "INTERPRETATIONS", "ELECTROPOSITIVE", "HYPOPROTEINEMIA"];
+var allWords = ["PROCRASTINATION", "PERSONIFICATION","CHARACTERISTICS", "CONGRATULATIONS", "ACCOMPLISHMENTS", "MANEUVERABILITY", "NATIONALISATION", "CONFIDENTIALITY", "ACHONDROPLASTIC", "MEDICAMENTATION", "ELECTRIFICATION", "INSTRUMENTALIST", "ATRIPLICIFOLIUM", "STRAIGHTFORWARD", "ACADEMICIANSHIP", "APPROPRIATENESS", "INACCESSIBILITY", "TRIFLUOPERAZINE", "GASTROENTERITIS", "WEATHERBOARDING", "DISADVANTAGEOUS", "FORTHCOMINGNESS", "MAGNETOELECTRIC", "MISCHIEVOUSNESS", "OPISTHOGNATHOUS", "INTERPRETATIONS", "ELECTROPOSITIVE", "HYPOPROTEINEMIA", "MILLIEQUIVALENT"];
 var columnLength = 20;
 var xLowLimit = 20;
 var yLowLimit = 0;
@@ -10,6 +10,7 @@ var answers = [];
 var lastLetter = -1;
 var firstClick = -1;
 var secondClick = -1;
+var score = 0;
 function createWordSearch() {
   var canvas = document.getElementById("mazeCanvas");
   var ctx = canvas.getContext("2d");
@@ -39,7 +40,7 @@ function createWordSearch() {
   }
   // Draw Word Bank
   ctx.beginPath();
-  ctx.rect(30, 1000, 480, 440);
+  ctx.rect(30, 1000, 480, 470);
   ctx.stroke();
   ctx.font = "15pt Courier";
   ctx.fillStyle = "#000000";
@@ -135,7 +136,7 @@ function doMouseUp(event) {
       // Check code for actual answer
       for (var i = 0; i < answers.length; i++) {
         var element = answers[i];
-        if (((answers[i][1] == firstClick) && (answers[i][2] == secondClick)) || ((answers[i][1] == secondClick) && (answers[i][2] == firstClick))) {
+        if ((answers[i][4] == false) && (((answers[i][1] == firstClick) && (answers[i][2] == secondClick)) || ((answers[i][1] == secondClick) && (answers[i][2] == firstClick)))) {
           wordFound = true;
           // Draw line from first character to last character
           var xIndexWon = firstClick % columnLength;
@@ -194,7 +195,28 @@ function doMouseUp(event) {
           // Cross the word with a red line in word bank
           var bankRowNumber = parseInt(i / 2);
           var bankColumnNumber = i % 2;
-          // 
+          console.log("row: " + bankRowNumber + ",,, col: " + bankColumnNumber + "!");
+          ctx.beginPath(); 
+          var ex1 = 50;
+          var why1 = 1030;
+          if (bankColumnNumber == 1) {
+            ex1 = 300;
+          }
+          why1 += (30 * bankRowNumber) - 5;
+          var why2 = why1;
+          var ex2 = ex1 + (12 * answers[i][0].length);
+          ctx.moveTo(ex1,why1);
+          ctx.lineTo(ex2,why2);
+          ctx.strokeStyle = "#FF0000";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          score++;
+          console.log("score is.... " + score + "!");
+          answers[i][4] = true;
+          console.log("setting true for " + answers[i][0] + "!");
+          if (score == allWords.length) {
+            $("#txtStatus").val("YOU ARE DONE!!!!!!! DO MY OTHER WORD SEARCHES IF YOU FIND THEM :D ");
+          }
           break;
         }
         if (!wordFound) {
@@ -290,7 +312,7 @@ function findWord(word, position, direction) {
     }
   } 
   if (flag) {
-    answers.push([word, position, lastPosition, direction]);
+    answers.push([word, position, lastPosition, direction, false]);
   }
   return flag;
 }
